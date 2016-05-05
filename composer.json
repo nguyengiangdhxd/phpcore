@@ -1,0 +1,22 @@
+{
+  "name": "luutronghieu/project-ide",
+  "type": "library",
+  "description": "Alitech Items Depost Project",
+  "keywords": ["Ecommerce", "B2B"],
+  "homepage": "http://tronghieu.me",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Luu Trong Hieu",
+      "email": "tronghieu.luu@gmail.com"
+    }
+  ],
+  "require": {
+    "tronghieu/flyapi": "dev-master",
+    "tronghieu/flywheel-framework": "1.1.*@dev",
+    "netom/mondator": "1.0.*",
+    "netom/mandango": "1.0.*",
+    "swiftmailer/swiftmailer": "*",
+    "phpoffice/phpexcel": "dev-develop"
+  }
+}

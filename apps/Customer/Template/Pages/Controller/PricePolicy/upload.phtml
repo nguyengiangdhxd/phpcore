@@ -1,0 +1,118 @@
+<?php
+use Flywheel\View\Render;
+/** @var Render $this */
+$doc = $this->document();
+
+$doc->title = 'Sửa Giá Bán Hàng Loạt';
+
+//js
+$doc->addJs('assets/plugins/handlerbars/handlebars-v3.0.0.js');
+
+//css
+$doc->addCss('assets/css/libs/fileupload/jquery.fileupload.css');
+
+//fileupload
+$doc->addJs('assets/js/libs/jquery.ui/jquery.ui.widget.js', 'TOP');
+$doc->addJs('assets/js/libs/fileupload/canvas-to-blob.min.js');
+$doc->addJs('assets/js/libs/fileupload/load-image.all.min.js');
+$doc->addJs('assets/js/libs/fileupload/jquery.iframe-transport.js');
+$doc->addJs('assets/js/libs/fileupload/jquery.fileupload.js');
+$doc->addJs('assets/js/libs/fileupload/jquery.fileupload-process.js');
+$doc->addJs('assets/js/libs/fileupload/jquery.fileupload-image.js');
+
+
+
+//upload url
+$upload_url = $this->createUrl('price_policy/upload');
+$doc->addJsVar('upload_url', $upload_url);
+//parsing file url
+$doc->addJsVar('parse_file_url', $this->createUrl('price_policy/parsing_file'));
+
+$doc->addJs('assets/process/items_price_upload.js');
+$title = 'upload file giá';
+//form
+$uploadForm = $this->createFrom('upload-form', $upload_url);
+$uploadForm->setHtmlOption([
+    'enctype' => 'multipart/form-data'
+]);
+?>
+<?php
+$this->widget('app.Widget.BreadcrumbsPage', array(
+    'links' => array(
+        t('Home') => array(
+            'url' => $this->createUrl('Customer/default')
+        ),
+        $title
+    ),
+)); ?>
+
+
+<div class="container" id="_fileupload-container">
+    <div class="row">
+        <!-- Upload Files -->
+        <div class="col-md-4">
+            <h3>Sửa Giá Bán Hàng Hoạt</h3>
+            <?php  /*
+        <?php $form->beginForm(); ?>
+        <label for="fileToUpload">Select Files to Upload</label><br />
+        <input type="file" name="files_upload[]" id="files_upload" multiple="multiple" accept="image/*" capture="camera">
+        <!--<input type="file" name="filesToUpload" id="filesToUpload" accept="image/*" capture="camera">-->
+        <output id="filesInfo"></output>
+        <?php $form->endForm(); ?>
+        */ ?>
+            <!-- File upload button -->
+        <span class="btn btn-success fileinput-button">
+            <?php $uploadForm->beginForm(); ?>
+            <i class="fa fa-cloud-upload"></i>
+            <strong>Chọn files upload ...</strong>
+            <!-- The file input field used as target for the file upload widget -->
+            <input id="file-upload" type="file" name="files[]">
+            <?php $uploadForm->endForm(); ?>
+        </span>
+            <!--/ file upload button -->
+        </div>
+        <!-- /upload files -->
+
+        <!-- Result Files -->
+        <div class="col-md-8">
+            <div id="_files-uploaded" class="alert alert-success alert-dismissible hidden"></div>
+        </div>
+        <!-- /result upload files -->
+    </div>
+
+
+</div>
+
+<!-- UPLOAD RESULT MODAL BOX -->
+<div class="modal fade stick-up" id="_upload-success-modal" tabindex="-1" role="dialog" aria-hidden="true" style="display: none;">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header clearfix text-left">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"><i class="pg-close fs-14"></i></button>
+                <h5 id="_upload-success-header"><span class="semi-bold"></span></h5>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-12 hidden" id="_upload-success-body">
+                        <div class="full-height">
+                            <div class="panel-body text-center">
+                                <img class="image-responsive-height" src="<?php echo $doc->cssBaseUrl ?>/assets/img/demo/progress.svg" alt="Progress" style="width: 32px">
+                                <span class="semi-bold">Hệ thống đang phân tích file dữ liệu</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-12 hidden" id="_parsing-success-body">
+                        <div class="full-height">
+                            <div class="panel-body text-center">
+                                Tìm thấy <span id="_items-result-no" class="bold"></span> sản phẩm và <span id="_variants-result-no" class="bold"></span> phiên bản sản phẩm trong file.<br>
+                                Việc cập nhật dữ liệu đang được tiến hành, vui lòng đợi 3 - 5 phút để thấy sự thay đổi.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!--/upload result modal box -->

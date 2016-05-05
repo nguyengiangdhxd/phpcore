@@ -1,0 +1,21 @@
+<!--hiển thị của breadCrums-->
+
+<div class="jumbotron" data-pages="parallax">
+    <div class="container-fluid container-fixed-lg sm-p-l-20 sm-p-r-20">
+        <div class="inner">
+            <ul class="breadcrumb">
+                <?php foreach ($activesLink as $activeLink) : ?>
+                    <li>
+                        <a href="<?php echo $activeLink['url'] ?>"><?php echo $activeLink['label'] ?></a>
+                    </li>
+                <?php endforeach; ?>
+                <?php
+                if(isset($inActivesLink)) {
+                    foreach ($inActivesLink as $inActiveLink) : ?>
+                        <li class="active"><?php echo $inActiveLink ?></li>
+                    <?php endforeach; ?>
+                <?php } ?>
+            </ul>
+        </div>
+    </div>
+</div>

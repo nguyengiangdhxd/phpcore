@@ -1,0 +1,53 @@
+<?php
+use Core\CustomerAuth;
+
+$document = $this->document();
+$document->title = 'Cài đặt app trên IDE';
+############ Thêm Css cho trang ##########
+$document->addCss('pages/css/pages.css');
+#$document->addCss('pages/css/styles.css');
+
+if (!$customer) {
+    $customer = CustomerAuth::getInstance()->getCustomer();
+    $app_data = [
+        'app_name' => 'test_app',
+        'external_account' => 'testing_account'
+    ];
+}
+/** @var \Customer $customer */
+/*$customer = CustomerAuth::getInstance()->getCustomer();*/
+/** @var array $app_data */
+?>
+
+<body class="fixed-header">
+<div class="login-wrapper page-login-ide">
+    <div class="login-container bg-white">
+        <div class="p-l-50 m-l-20 p-r-50 m-r-20 p-t-30 sm-p-l-15 sm-p-r-15 sm-p-t-40">
+            <img src="templates/pages.revox.io/assets/img/logo.png" alt="logo"
+                 data-src="templates/pages.revox.io/assets/img/logo.png"
+                 data-src-retina="templates/pages.revox.io/pages/img/logo_2x.png" width="78" height="22">
+
+            <p class="" style="margin-top: 24px;">Bạn đang cài đặt ứng dụng <strong><?= $app_data['app_name'] ?></strong> trên IDE.<br/>
+                <br/>
+                Bạn có chắc chắn muốn liên kết
+                tài khoản <strong><?= $app_data['external_account'] ?></strong> trên
+                <strong><?= $app_data['app_name'] ?></strong> với tài khoản <strong><?= $customer->getUsername() ?></strong> trên IDE?</p>
+
+            <a href="<?= $this->request()->getUri()."&confirm=1" ?>" class="btn btn-primary btn-cons m-t-10" id="_btn_commit">Cài đặt</a>
+
+
+            <div class="pull-bottom sm-pull-bottom">
+                <div class="m-b-30 p-r-80 sm-m-t-20 sm-p-r-15 sm-p-b-20 clearfix">
+                    <div class="col-sm-3 col-md-2 no-padding">
+                        <img alt="" class="m-t-5" data-src="templates/pages.revox.io/assets/img/demo/pages_icon.png"
+                             data-src-retina="templates/pages.revox.io/assets/img/demo/pages_icon_2x.png" height="60"
+                             src="templates/pages.revox.io/assets/img/demo/pages_icon.png" width="60">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+</body>

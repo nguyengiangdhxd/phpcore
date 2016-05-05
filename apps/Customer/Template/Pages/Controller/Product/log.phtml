@@ -1,0 +1,118 @@
+<?php
+use Flywheel\Document\Html;
+
+$document = $this->document();
+/** @var Html $document */
+$document->addCss('assets/plugins/bootstrap-datepicker/css/datepicker3.css');
+$document->addCss('assets/plugins/bootstrap-daterangepicker/daterangepicker-bs3.css');
+$document->addCss('assets/plugins/bootstrap-timepicker/bootstrap-timepicker.min.css');
+$document->addCss('pages/css/table-responsive.css');
+$document->addCss('pages/css/process/product/log.css');
+$document->addJs('assets/plugins/handlerbars/handlebars-v3.0.0.js');
+$document->addJs('assets/plugins/notify.min.js');
+$document->addJs('assets/js/jquery.slimscroll.min.js');
+$document->addJs('assets/js/libs/jquery.ui/jquery.ui.widget.js', 'TOP');
+$document->addJs('assets/js/libs/fileupload/canvas-to-blob.min.js');
+$document->addJs('assets/js/libs/fileupload/load-image.all.min.js');
+$document->addJs('assets/js/libs/fileupload/jquery.iframe-transport.js');
+$document->addJs('assets/plugins/moment/moment.min.js');
+$document->addJs('assets/plugins/bootstrap-datepicker/js/bootstrap-datepicker.js');
+$document->addJs('assets/plugins/bootstrap-daterangepicker/daterangepicker.js');
+$document->addJs('assets/plugins/bootstrap-timepicker/bootstrap-timepicker.min.js');
+$document->addJs('assets/process/log_product.js');
+$document->addJs('assets/js/form_elements.js');
+
+$title = 'Danh sách log sản phẩm';
+/** @var \Mongodb\Items $item_product*/
+/** @var \Mongodb\ItemVariant $item_variant */
+?>
+<script>
+    var list_item_comment = '<?php echo $this->createUrl('product_log') ?>';
+    var search_item_comment = '<?php echo $this->createUrl('ProductLog/GetListItemComment') ?>';
+</script>
+<?php
+$this->widget('app.Widget.BreadcrumbsPage', array(
+    'links' => array(
+        t('Home') => array(
+            'url' => $this->createUrl('Customer/default')
+        ),
+        $title
+    ),
+)); ?>
+
+
+<div class="container-fluid container-fixed-lg">
+
+
+    <form class="_form_search_list_log" id="_form_list_product_log" name="listProductLog">
+        <input type="hidden" class="" value="<?= $page ?>" id="current_page" name="page">
+        <div class="row search-log">
+            <div class="col-md-5">
+                <h4 class="font-500 m-t-0">Danh sách hành động</h4>
+            </div>
+            <div class="col-md-5">
+                <div class="form-group">
+                    <div class="input-prepend input-group">
+                        <span class="add-on input-group-addon"><i class="glyphicon glyphicon-calendar fa fa-calendar"></i></span>
+
+                        <input type="text" style="width: 100%" data-daterangepicker="" name="reservation" id="daterangepicker" class="form-control active" value="">
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="form-group">
+                    <select class="full-width select2-offscreen" data-init-plugin="select2" name="contextType" id="_type_value">
+                        <option value="">Loại</option>
+                        <option value="LOG" <?php if($contextType == 'LOG'){ echo "selected";} ?> >Log</option>
+                        <option value="CHAT" <?php if($contextType == 'CHAT'){ echo "selected";} ?>  >Chat</option>
+                        <option value="ACTIVITY" <?php if($contextType == 'ACTIVITY'){ echo "selected";} ?>  >Activity</option>
+                    </select>
+
+                </div>
+            </div>
+        </div>
+    </form>
+        <!--danh sách hành động-->
+        <div class="row">
+            <div class="col-md-12">
+                <div id="_display_list_log">
+
+                </div>
+            </div>
+            <div class="col-md-12">
+                <div id="paging" align="center"></div>
+            </div>
+        </div>
+</div>
+
+<script id="_render_log" type="text/x-handlebars-template">
+    {{#if itemComment}}
+    <table class="tbl-responsive tbl-log">
+        <thead>
+        <tr>
+            <!--<th>STT</th>-->
+            <th>ID sản phẩm</th>
+            <th>Loại</th>
+            <th>Nội dung</th>
+            <th>Thời gian</th>
+        </tr>
+        </thead>
+        <tbody>
+
+        {{#each itemComment}}
+        <tr>
+            <!--<td> {{rowNumber @index ../page}} </td>-->
+            <td><a href="<?php echo $this->createUrl('/chi-tiet-san-pham/{{idItems}}') ?>" target="_blank">{{idItems}}</a></td>
+            <td class="font-600">{{contextType}}</td>
+            <td>{{context.message}}</td>
+            <td>{{created_time}}</td>
+        </tr>
+        {{/each}}
+        </tbody>
+    </table>
+    {{else}}
+    <p align="center" style="margin-top: 50px;"><strong>Không có thông tin !</strong></p>
+    {{/if}}
+</script>
+
+

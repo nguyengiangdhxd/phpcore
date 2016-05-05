@@ -1,0 +1,265 @@
+<?php
+use Flywheel\Document\Html;
+use Flywheel\Html\Form;
+$document = $this->document();
+/** @var Html $document */
+/** @var  $customer \Customer */
+/** @var  $customer_profile */
+$form = new \Flywheel\Html\Form('new_form_profile','CustomerProfile');
+$form->setHtmlOption([
+    'class' => 'new_form_profile form-horizontal form-bordered clearfix',
+]);
+$cpForm = new \Flywheel\Html\Form('new_form_profile');
+$cpForm->setHtmlOption([
+    'class' => 'form-validate p-t-15',
+    'novalidate'=>'novalidate',
+    'method'=>'post'
+]);
+$title = 'Thông tin cá nhân';
+$document->addJs('assets/process/changepass.js');
+$document->addJs('assets/plugins/date-picker/bootstrap-datepicker.js');
+$document->addCss('assets/plugins/date-picker/bootstrap-datepicker.css');
+$document->addCss('assets/css/profile-style.css');
+$document->addJs('pages/process/logout.js');
+#var_dump($customer_profile);
+
+?>
+<?php
+$this->widget('app.Widget.BreadcrumbsPage', array(
+    'links' => array(
+        t('Home') => array(
+            'url' => $this->createUrl('Customer/default')
+        ),
+        $title
+    ),
+)); ?>
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-5">
+            <div class="panel panel-default">
+                <div class="panel-body" id="profile-info">
+                    <div class="row">
+                        <div class="col-md-5">Tên đầy đủ</div>
+                        <div class="col-md-5"><?= $customer->getName()?></div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-5">Email</div>
+                        <div class="col-md-5"><?= $customer->getEmail() ?> </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-5">Số điện thoại</div>
+                        <div class="col-md-5"><?= $customer->getMobile() ?></div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-5">Ngày sinh</div>
+                        <div class="col-md-5">
+                            <?php if($customer->getBirthday()){?>
+                            <?= $customer->getBirthday()->format('d-m-Y')?>
+                            <?php } ?>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-5">Địa chỉ</div>
+                        <div class="col-md-5"><?=$customer->getAddress()?></div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-5">Tài khoản</div>
+                        <div class="col-md-5"><?= $customer->getBalance() ?></div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-5">Đăng nhập cuối</div>
+                        <div class="col-md-5"><?= $customer->getLastLoginTime()->format('H:i:s d/m/Y') ?></div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-5">IP đăng nhập cuối</div>
+                        <div class="col-md-5"><?=$customer->getLastLoginIp() ?></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="panel panel-default">
+                <div class="panel-body" id="profile-info">
+                    <div class="row">
+                        <div class="col-md-5"><strong>Cài đặt Dịch vụ</strong></div>
+                        <div class="col-md-5"><strong>Thời gian cài đặt</strong></div>
+                    </div>
+                    <div class="row">
+                        <?php foreach($customer_profile as $customer_service){ ?>
+                        <div class="col-md-5"><?=strtoupper($customer_service['service']) ?></div>
+                        <div class="col-md-5"><?=$customer_service['createdTime'] ?></div>
+                        <?php } ?>
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+        <!--form edit thông tin user-->
+        <div class="col-md-7">
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <?php
+                    $error_message = \Flywheel\Session\Session::getInstance()->getFlash('error_message');
+                    $success_message = \Flywheel\Session\Session::getInstance()->getFlash('success_message');
+                    if (!empty($error_message)) { ?>
+                    <div class="alert alert-danger">
+                        <?php foreach ($error_message as $tmp) {
+                            echo $tmp . '<br/>';
+                        } ?>
+                    </div>
+                    <?php } else if (!empty($success_message)) { ?>
+                        <div class="alert alert-success">
+                            <?php echo $success_message; ?>
+                        </div>
+                    <?php
+                    } ?>
+                    <?php $form->beginForm();
+                    $form->input('id',$customer->getId())
+                        ->setType('hidden')
+                        ->addClass('form-control')
+                        ->display();
+                    ?>
+                    <div class="form-group">
+                        <label for="email" class="control-label col-sm-2">Email</label>
+
+                        <div class="col-sm-10">
+                            <?php
+                            $form->input('email', $customer->getEmail())
+                                ->setId('email')
+                                ->addClass('form-control')
+                                ->display();
+                            ?>
+                        </div>
+
+                    </div>
+                    <div class="form-group">
+                        <label for="mobile" class="control-label col-sm-2">Số điện thoại</label>
+
+                        <div class="col-sm-10">
+                            <?php
+                            $form->input('mobile', $customer->getMobile())
+                                ->setId('mobile')
+                                ->addClass('form-control')
+                                ->display();
+                            ?>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="name" class="control-label col-sm-2">Tên đầy đủ</label>
+
+                        <div class="col-sm-10">
+                            <?php
+                            $form->input('name', $customer->getName())
+                                ->setId('name')
+                                ->addClass('form-control')
+                                ->display();
+                            ?>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="birthday" class="control-label col-sm-2">Ngày sinh</label>
+
+                        <div class="col-sm-10">
+                            <?php
+                            $date = new \Flywheel\Db\Type\DateTime($customer->getBirthday());
+                            $date_string = $date->format('d/m/Y');
+                            $form->input('birthday', $date_string)
+                                ->setId('birthday')
+                                ->addClass('form-control')
+                                ->setData('date-format', "dd/mm/yyyy")
+                                ->addClass('datepicker')
+                                ->display();
+                            ?>
+                        </div>
+                    </div>
+
+
+                    <div class="form-group text-nowrap">
+                        <label for="textarea_detail_address" class="control-label col-sm-2">Địa chỉ chi tiết</label>
+
+                        <div class="col-sm-10">
+                            <?php
+                            $form
+                                ->textArea('address', $customer->getAddress())
+                                ->setId('textarea_detail_address')
+                                ->addClass('form-control')
+                                ->display();
+                            ?>
+                        </div>
+                    </div>
+
+                    <div class="form-actions col-sm-offset-2 col-sm-10">
+                        <button type="submit" class="btn btn-success">Lưu thay đổi</button>
+                        <button type="reset" class="btn">Làm lại</button>
+                    </div>
+                    <?php $form->endForm(); ?>
+                </div>
+            </div>
+
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <div class="alert alert-danger" id="cp-alert" ></div>
+                    <?php $cpForm->beginForm(); ?>
+                    <div class="form-group change-pass">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <label for="old-password" class="control-label col-sm-2 old-pass">Mật khẩu cũ</label>
+                                <div class="col-sm-10">
+                                    <?php
+                                    $cpForm->input('old-password', '')
+                                        ->setType('password')
+                                        ->setId('old-password')
+                                        ->addClass('form-control')
+                                        ->display();
+                                    ?>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <br/>
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <label for="new-password" class="control-label col-sm-2 new-pass">Mật khẩu mới</label>
+                                <div class="col-sm-10">
+                                    <?php
+                                    $cpForm->input('new-password', '')
+                                        ->setType('password')
+                                        ->setId('new-password')
+                                        ->addClass('form-control')
+                                        ->display();
+                                    ?>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="col-md-2">
+                                    <label for="retype-password" class="control-label">Nhập lại mật khẩu</label>
+                                </div>
+                                <div class="col-sm-10">
+                                    <?php
+                                    $cpForm->input('retype-password', '')
+                                        ->setType('password')
+                                        ->setId('retype-password')
+                                        ->addClass('form-control')
+                                        ->display();
+                                    ?>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-actions col-sm-offset-2 col-sm-10">
+                        <button class="btn btn-success" id="_changePass" type="button">Đổi mật khẩu</button>
+                    </div>
+                    <?php $cpForm->endForm(); ?>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

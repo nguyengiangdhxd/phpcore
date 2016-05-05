@@ -1,0 +1,123 @@
+<?php
+use Flywheel\Document\Html;
+use Flywheel\Html\Form;
+use Flywheel\Session\Session;
+/** @var Html $document */
+$document = $this->document();
+############################################
+$document->addJs('pages/js/pages.min.js','TOP');
+$document->addJs('assets/js/scripts.js','TOP');
+$document->addJs('assets/js/theme_switcher.js','TOP');
+##########################################
+############ Thêm Css cho trang ##########
+##########################################
+$document->addCss('pages/css/pages.css');
+$document->addCss('pages/css/pages-icons.css');
+$document->addJs('pages/js/pages.min.js');
+$document->addJs('assets/process/login.js');
+
+$form = new \Flywheel\Html\Form('add-frm');
+
+$form->setHtmlOption([
+    'class' => 'form-validate p-t-15',
+    'novalidate'=>'novalidate',
+    'method'=>'post'
+]);
+$message = Session::getInstance()->getFlash('login');
+?>
+<body class="fixed-header   ">
+<div class="login-wrapper ">
+    <div class="bg-pic">
+        <img src="templates/pages.revox.io/assets/img/demo/new-york-city-buildings-sunrise-morning-hd-wallpaper.jpg"
+             data-src="templates/pages.revox.io/assets/img/demo/new-york-city-buildings-sunrise-morning-hd-wallpaper.jpg"
+             data-src-retina="templates/pages.revox.io/assets/img/demo/new-york-city-buildings-sunrise-morning-hd-wallpaper.jpg" alt=""
+             class="lazy">
+
+
+        <div class="bg-caption pull-bottom sm-pull-bottom text-white p-l-20 m-b-20">
+            <h2 class="semi-bold text-white">
+                software that will change your life
+            </h2>
+
+            <p class="small">
+                Bản quyền thuộc về Công Ty Cổ Phần Công Nghệ Và Truyền Thông Alimama Việt Nam
+                Email: cskh@seudo.vn - Hotline: 047 303 8838 - 046 297 7078
+            </p>
+        </div>
+
+    </div>
+
+    <div class="login-container bg-white">
+        <div class="p-l-50 m-l-20 p-r-50 m-r-20 p-t-50 m-t-30 sm-p-l-15 sm-p-r-15 sm-p-t-40">
+            <img src="templates/pages.revox.io/assets/img/logo.png" alt="logo" data-src="templates/pages.revox.io/assets/img/logo.png"
+                 data-src-retina="templates/pages.revox.io/pages/img/logo_2x.png" width="78" height="22">
+            <p></p>
+            <p class="_error warning"></p>
+            <p class="">Đăng nhập vào tài khoản</p>
+            <?php $form->beginForm(); ?>
+
+            <?php if (!empty($error)) : ?>
+                <div class="alert alert-danger" role="alert">
+                    <strong>Lỗi!</strong><br>
+                    <?php echo implode('<br>', $error); ?>
+                </div>
+            <?php endif; ?>
+            <div class="form-group form-group-default">
+                <label>Tên đăng nhập</label>
+                <div class="controls">
+                    <?php
+                    $form->input('username','')
+                        ->setType('text')
+                        ->setHtmlOption(['autofocus' => 1])
+                        ->addClass('form-control')
+                        ->setPlaceHolder('Tên đăng nhập')
+                        ->display();
+                    ?>
+                </div>
+            </div>
+
+
+            <div class="form-group form-group-default">
+                <label>Password</label>
+                <div class="controls">
+                    <div class="controls">
+                        <?php
+                        $form->input('password','')
+                            ->setType('password')
+                            ->addClass('form-control')
+                            ->setPlaceHolder('Mật khẩu')
+                            ->display();
+                        ?>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 no-padding">
+                    <div class="checkbox ">
+                        <input type="checkbox" value="1" id="checkbox1">
+                        <label for="checkbox1">Duy trì đăng nhập</label>
+                    </div>
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary btn-cons m-t-10" id="_btn_commit">Đăng nhập</button>
+            <?php $form->endForm(); ?>
+            <div class="pull-bottom sm-pull-bottom">
+                <div class="m-b-30 p-r-80 sm-m-t-20 sm-p-r-15 sm-p-b-20 clearfix">
+                    <div class="col-sm-3 col-md-2 no-padding">
+                        <img alt="" class="m-t-5" data-src="templates/pages.revox.io/assets/img/demo/pages_icon.png"
+                             data-src-retina="templates/pages.revox.io/assets/img/demo/pages_icon_2x.png" height="60"
+                             src="templates/pages.revox.io/assets/img/demo/pages_icon.png" width="60">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+</body>
+<style>
+    .warning{
+        color: red;
+    }
+</style>

@@ -1,0 +1,12 @@
+<?php
+/** @var \Mongodb\Items $item */
+$images = (array) $item->getBodyImages();
+?>
+
+<div>
+    <?php foreach ($images as $image) { ?>
+    <div>
+        <img src="<?= $image ?>"/>
+    </div>
+    <?php } ?>
+</div>

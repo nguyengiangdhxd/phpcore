@@ -1,0 +1,175 @@
+<?php
+use Flywheel\Document\Html;
+
+$document = $this->document();
+/** @var Html $document */
+$document->addCss('pages/css/general.css');
+$document->addCss('pages/css/process/product/service-list.css');
+$document->addJs('pages/css/pages.css');
+$document->addJs('pages/css/pages.css');
+//var_dump($data);//
+$document->addJs('assets/process/product_integration.js');
+
+?>
+<div class="container-fluid container-fixed-lg">
+    <div class="col-md-offset-2 col-md-8">
+        <div class="row m-t-25 m-b-45">
+            <div class="col-md-12">
+                <h4 class="font-400">Danh sách dịch vụ</h4>
+            </div>
+            <div class="col-md-12 search-services">
+                <div class="input-group">
+                    <input type="text" class="form-control" placeholder="Tìm kiếm...">
+                                    <span class="input-group-btn">
+                                        <button class="btn btn-default" type="button"><i class="fa fa-search"></i>
+                                        </button>
+                                    </span>
+                </div>
+            </div>
+        </div>
+        <div class="panel panel-default content-box profile-box">
+            <div class="panel-body">
+                <div class="user-details">
+                    <h5 class="m-t-0 m-b-15">Click vào nút "-" để bỏ dịch vụ</h5>
+                </div>
+                <table class="table user-table-list">
+                    <tbody>
+                    <?php foreach ($data['integration'] as $key => $val){ ?>
+                    <?php if ($key == 'bizweb') { ?>
+                        <tr>
+                            <td class="text-left name-container">
+                                <div class="avatar-bock">
+                                    <a href="javascript:"><img src="templates/pages.revox.io/pages/img/bizweb-logo.png"
+                                                               class="user-avatar" width="100" height="80"></a>
+                                </div>
+                                <div class="name-bock">
+                                    <a href="javascript:"><strong><?php echo $key; ?></strong></a>
+
+                                    <p><?php echo date('d/m/Y H:i', $val['createdTime']->sec); ?></p>
+                                </div>
+                            </td>
+
+                            <td class="text-right">
+                                <a href="javascript:" class="btn btn-danger _remove_bizweb" data-service-type="<?=$key ?>">
+                                    <span class="button-content"><i class="fa fa-minus"></i></span>
+                                </a>
+                            </td>
+                        </tr>
+                    <?php } ?>
+                    <?php if ($key == 'haravan'){ ?>
+                    <tr>
+                        <td class="text-left name-container">
+                            <div class="avatar-bock">
+                                <a href="javascript:"><img src="templates/pages.revox.io/pages/img/logo-haravan.png" class="user-avatar"
+                                           width="100" height="80"></a>
+                            </div>
+                            <div class="name-bock">
+                                <a href="javascript:"><strong><?php echo $key; ?></strong></a>
+
+                                 <p><?php echo date('d/m/Y H:i', $val['createdTime']->sec); ?></p>
+                            </div>
+                        </td>
+
+                        <td class="text-right">
+                            <a href="javascript:" class="btn btn-danger _remove_haravan" data-service-type="<?= $key ?>">
+                                <span class="button-content"><i class="fa fa-minus"></i></span>
+                            </a>
+                        </td>
+                    </tr>
+
+
+                    <?php } ?>
+                <?php } ?>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <?php if ($data['service_integration'] != 'ALL') { ?>
+        <div class="panel panel-default content-box profile-box profile-box-alt">
+            <div class="panel-body">
+                <div class="user-details">
+                    <h5 class="m-t-0 m-b-15">Click vào nút "+" để thêm dịch vụ</span></h5>
+                </div>
+                <table class="table user-table-list">
+                    <tbody>
+                    <?php if ($data['service_integration'] == 'BIZWEB') { ?>
+                        <tr>
+                            <td class="text-left name-container">
+                                <div class="avatar-bock">
+                                    <a href="javascript:"><img src="templates/pages.revox.io/pages/img/logo-haravan.png"
+                                                               class="user-avatar"></a>
+                                </div>
+                                <div class="name-bock">
+                                    <a href="javascript:"><strong>Haravan</strong></a>
+                                </div>
+                            </td>
+
+                            <td class="text-right">
+                                <a href="https://itemd-shop.myharavan.com/admin/app#/list" target="_blank" class="btn btn-success">
+                                    <span class="button-content"><i class="fa fa-plus"></i></span>
+                                </a>
+                            </td>
+                        </tr>
+                    <?php } ?>
+                    <?php if ($data['service_integration'] == 'HARAVAN') { ?>
+                        <tr>
+                            <td class="text-left name-container">
+                                <div class="avatar-bock">
+                                    <a href="javascript:"><img src="templates/pages.revox.io/pages/img/bizweb-logo.png"
+                                                               class="user-avatar"></a>
+                                </div>
+                                <div class="name-bock">
+                                    <a href="javascript"><strong>BizWeb</strong></a>
+                                </div>
+                            </td>
+
+                            <td class="text-right">
+                                <a href="https://kiennx2.bizwebvietnam.net/admin/apps" target="_blank" class="btn btn-success">
+                                    <span class="button-content"><i class="fa fa-plus"></i></span>
+                                </a>
+                            </td>
+                        </tr>
+                    <?php } ?>
+                    <?php if ($data['service_integration'] == 'EMPTY') { ?>
+                        <tr>
+                            <td class="text-left name-container">
+                                <div class="avatar-bock">
+                                    <a href="javascript:"><img src="templates/pages.revox.io/pages/img/logo-haravan.png"
+                                                               class="user-avatar"></a>
+                                </div>
+                                <div class="name-bock">
+                                    <a href="javascript"><strong>Haravan</strong></a>
+                                </div>
+                            </td>
+
+                            <td class="text-right">
+                                <a href="https://itemd-shop.myharavan.com/admin/app#/list" class="btn btn-success">
+                                    <span class="button-content"><i class="fa fa-plus"></i></span>
+                                </a>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="text-left name-container">
+                                <div class="avatar-bock">
+                                    <a href="javascript:"><img src="templates/pages.revox.io/pages/img/bizweb-logo.png"
+                                                               class="user-avatar"></a>
+                                </div>
+                                <div class="name-bock">
+                                    <a href="javascript"><strong>BizWeb</strong></a>
+                                </div>
+                            </td>
+
+                            <td class="text-right">
+                                <a href="https://kiennx2.bizwebvietnam.net/admin/apps" class="btn btn-success">
+                                    <span class="button-content"><i class="fa fa-plus"></i></span>
+                                </a>
+                            </td>
+                        </tr>
+                    <?php } ?>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    <?php } ?>
+</div>
+</div>

@@ -1,0 +1,71 @@
+<?php
+// Localhost
+$host = '192.168.0.250';
+#$host = 'localhost';
+$port = 6379;
+$auth = '';
+return array(
+    '__default__' => 'default',
+
+    //config key info
+    'default' => array(
+        'dsn' => "$host:$port/7",
+        'option' => array(
+            'timeout' => 30, //connection timeout
+            'prefix' => 'custom-key-prefix'
+        ),
+    ),
+    /*'cart' => array(
+        'dsn' => "$host:$port/1",
+        'option' => array(
+            'timeout' => 30,
+        ),
+    ),
+
+    'consumer' => array(
+        'dsn' => "$host:$port/2",
+    ),
+    'order' => array(
+        'dsn' => "{$host}:{$port}/6",
+    ),
+
+    'order_item' => array(
+        'dsn' => "{$host}:{$port}/8",
+    ),
+    'notification'   => array(
+        'dsn' => "$host:$port/10",
+        'option' => array(
+            'timeout' => 30, //connection timeout
+            'prefix' => 'notification'
+        ),
+    ),
+    'packages'   => array(
+        'dsn' => "$host:$port/4",
+        'option' => array(
+            'timeout' => 30, //connection timeout
+            'prefix' => ''
+        ),
+    ),
+    'users' => array(
+        'dsn' => "$host:$port/2",
+        'option' => array(
+            'timeout' => 30, //connection timeout
+        ),
+    ),
+    'flood_gate' => [
+        'dsn' => "$host:$port/15",
+        'option' => array(
+            'timeout' => 120, //connection timeout
+            'prefix' => 'flood_'
+        ),
+    ],
+
+    'sms_queue' => [
+        'dsn' => "$host:$port/14",
+        'option' => array(
+            'timeout' => 30, //connection timeout
+            'prefix' => '' //no prefix, because of too many prefix in sms_queue function
+        ),
+    ],*/
+
+);

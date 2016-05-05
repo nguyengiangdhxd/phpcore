@@ -1,0 +1,80 @@
+<?php
+$document = $this->document();
+$document->addJsVar('setting', $setting);
+?>
+<div class="panel panel-default">
+    <div class="panel-body">
+        <div class="row">
+            <div class="col-md-6 col-xs-12" id="_log_user">
+                <!--lưu lại log-->
+            </div>
+            <div class="col-md-6 col-xs-12">
+                <h5 class="semi-bold m-t-0">Hành động</h5>
+                <div class="form-group">
+                    <div class="input-group">
+                        <input type="text" class="form-control" placeholder="Nội dung trao đổi" id="_content_chat">
+                                            <span class="input-group-btn">
+                                                <button class="btn btn-complete" type="button" id="_btn_chat_submit" data-id="">
+                                                    Submit
+                                                </button>
+                                            </span>
+                    </div>
+                </div>
+                <div id="_activity_user">
+                    <!--render activity-->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+<!--render log-->
+<script id="_render_log" type="text/x-handlebars-template">
+    <h5 class="semi-bold m-t-0">Logs</h5>
+    <ul class="block-logs-ide no-padding">
+        <li class="m-b-15 p-b-15">
+            <div class="content-log-ide">
+                <!--Nguyễn Hoàng Giang : cập nhật sản phẩm từ nguồn-->
+            </div>
+            <div class="date-log-ide inline">
+              <!--  18/02/2016-->
+            </div>
+        </li>
+    </ul>
+</script>
+<!--render activity-->
+<script id="_render_activity" type="text/x-handlebars-template">
+    <ul class="no-padding block-active-ide">
+        {{#each list_comments}}
+        <li class="m-b-15">
+            <div class="avarta-active-ide">
+                <img width="28" height="28" src="templates/pages.revox.io/assets/img/favicon.ico">
+            </div>
+
+            <div class="content-active-ide">
+                {{#if is_chat}}
+                <p class="no-margin"><strong>{{user_name}}</strong></p>
+                <p class="small">
+                    {{context.message}}
+                </p>
+                {{else}}
+                <p class="no-margin">
+                    {{context.message}} <!--hiện tại dài quá thì bị xuống dòng-->
+                </p>
+                <p class="small hint-text">{{user_name}} đồng bộ</p>
+                {{/if}}
+
+                <div class="date-active-ide">
+                    {{display_createTime}}
+                </div>
+            </div>
+            <div class="clearfix"></div>
+        </li>
+        {{/each}}
+    </ul>
+</script>
+

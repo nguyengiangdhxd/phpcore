@@ -1,0 +1,468 @@
+<?php
+use Flywheel\Document\Html;
+
+$document = $this->document();
+/** @var Html $document */
+$document->addCss('pages/css/process/product/product-list.css');
+$document->addJs('assets/plugins/handlerbars/handlebars-v3.0.0.js');
+$document->addJs('assets/process/list_product.js', 'BOTTOM');
+$document->addJs('assets/plugins/notify.min.js');
+$document->addJs('assets/plugins/jquery-autonumeric/autoNumeric.js');
+$document->addJs('assets/plugins/bootstrap-tag/bootstrap-tagsinput.min.js');
+$document->addCss('assets/plugins/bootstrap-tag/bootstrap-tagsinput.css');
+$document->addJs('assets/js/jquery.slimscroll.min.js');
+$title = 'Danh sách sản phẩm';
+?>
+<script>
+    var list_item_url = '<?php echo $this->createUrl('danh-sach-san-pham') ?>';
+    var search_item = '<?php echo $this->createUrl('ProductList/GetListItem') ?>';
+</script>
+<?php
+$this->widget('app.Widget.BreadcrumbsPage', array(
+    'links' => array(
+        t('Home') => array(
+            'url' => $this->createUrl('Customer/default')
+        ),
+        $title
+    ),
+)); ?>
+
+        <div class="content content-customer">
+            <!--hiển thị của breadCrums-->
+            <!-- SEARCH CONTAINER -->
+            <div class="container-fluid container-fixed-lg">
+                <h4 class="font-400">Danh sách sản phẩm</h4>
+
+                <!--<input type="text" value="Amsterdam,Washington,Sydney,Beijing,Cairo" data-role="tagsinput" />-->
+                <!-- BEGIN SEARCH FROM -->
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        <form class="_form_search_list_product" id="_form_list_product" name="listProduct">
+                            <input type="hidden" class="" value="<?= $page ?>" id="current_page" name="page">
+                            <!-- KEYWORDS -->
+                            <div class="row">
+                                <div class="col-md-12 form-group">
+                                    <input class="form-control input-lg" name="keyword" type="text" value="<?= $keyword ?>"
+                                           placeholder="Tìm theo tên sản phẩm hoặc ID sản phẩm gốc">
+                                </div>
+                            </div>
+                            <!--/ keywords -->
+                            <div class="row">
+                                <!-- PRODUCTS INFO SEARCH -->
+                                <div class="col-md-7">
+                                    <div class="row form-group">
+                                        <div class="col-md-4">
+                                            <input type="text" placeholder="Tên người bán"
+                                                   class="form-control form-myinput" name="seller_name" value="<?=$seller_name ?>" id="seller_name">
+                                        </div>
+
+                                        <div class="col-md-4">
+                                            <select class="full-width select2-offscreen" data-init-plugin="select2"
+                                                    name="hasSys" tabindex="-1" title="">
+                                                <option value="0">Trạng thái đồng bộ</option>
+                                                <option value="all" <?php if($hasSys == 'all'){echo 'selected';} ?>>Tất cả</option>
+                                                <option value="has_sys" <?php if($hasSys == 'has_sys'){echo 'selected';} ?>>Đã đồng bộ</option>
+                                                <option value="not_has_sys" <?php if($hasSys == 'not_has_sys'){echo 'selected';} ?>>Chưa đồng bộ</option>
+                                            </select>
+                                        </div>
+
+                                        <div class="col-md-3">
+                                            <select class="full-width" data-init-plugin="select2" name="siteOriginal"
+                                                    tabindex="-1" title="">
+                                                <option value="0">Site gốc</option>
+                                                <option value="TMALL" <?php if($siteOriginal == 'TMALL'){echo 'selected';} ?>>TMALL</option>
+                                                <option value="1688"  <?php if($siteOriginal == '1688'){echo 'selected';} ?>>1688</option>
+                                                <option value="TAOBAO"  <?php if($siteOriginal == 'TAOBAO'){echo 'selected';} ?>>TAOBAO</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!--/products info search -->
+
+                                <!-- PRICES SEARCH -->
+                                <div class="col-md-5">
+                                    <div class="row form-group">
+                                        <div class="col-md-6">
+                                            <div class="col-md-4">
+                                                <label class="p-t-5">Giá gốc</label>
+                                            </div>
+                                            <div class="input-group col-md-8">
+                                                <input type="text" class="input-sm form-control" name="from_price_origin" value="<?=$from_price_origin ?>">
+                                                <span class="input-group-addon">-</span>
+                                                <input type="text" class="input-sm form-control" name="to_price_origin" value="<?=$to_price_origin ?>">
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            <div class="col-md-4">
+                                                <label class="p-t-5">Giá bán</label>
+                                            </div>
+                                            <div class="input-group col-md-8">
+                                                <input type="text" class="input-sm form-control" name="from_price_sale" value="<?= $from_price_sale ?>">
+                                                <span class="input-group-addon">-</span>
+                                                <input type="text" class="input-sm form-control" name="to_price_sale" value="<?=$to_price_sale ?>">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!--/prices search -->
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <!--/ search form -->
+            </div>
+            <!--/search container -->
+
+            <!-- PRODUCT LIST -->
+            <div class="container-fluid container-fixed-lg bg-white">
+                <div class="panel panel-transparent">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">Số sản phẩm <span class="text-danger _product_info"></span></h3>
+
+                        <div class="pull-right">
+                            <button class="btn btn-default m-b-10 _exportExcel"><i class="fa fa-file-excel-o"></i> Xuất Excel</button>
+                            <div class="btn-group m-b-10">
+                                <button type="button" class="btn btn-default">Sắp xếp</button>
+                                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                                    <span class="caret"></span>
+                                </button>
+                                <ul class="dropdown-menu" role="menu">
+                                    <li class="_sortCreatedTime" data-code="createdTime" data-value="-1"><a href="javascript:">Thời gian tạo <i class="fa fa-sort-amount-desc"></i> </a></li>
+                                    <li class="_sortCreatedTime" data-code="createdTime" data-value="1"><a href="javascript:">Thời gian tạo <i class="fa fa-sort-amount-asc"></i> </a></li>
+                                    <li class="_priceOrigin" data-code="minOriginPrice" data-value="-1" ><a href="javascript:">Giá gốc <i class="fa fa-long-arrow-down"></i> </a></li>
+                                    <li class="_priceOrigin" data-code="minOriginPrice" data-value="1"><a href="javascript:">Giá gốc <i class="fa fa-long-arrow-up"></i> </a></li>
+                                    <li class="_priceSale" data-code="minPriceSale" data-value="-1" ><a href="javascript:">Giá bán <i class="fa fa-long-arrow-down"></i> </a></li>
+                                    <li class="_priceSale" data-code="minPriceSale" data-value="1"><a href="javascript:">Giá bán <i class="fa fa-long-arrow-up"></i> </a></li>
+                                </ul>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="panel-body">
+                        <!-- TABLES -->
+                        <div class="dataTables_wrapper form-inline no-footer _list_product" id="_listProduct">
+
+                        </div>
+                        <!--/tables -->
+
+                        <!-- BOTTOM ACTIONS -->
+                        <div class="row">
+                            <div class="col-md-6">
+                                Với những sản phẩm đã chọn
+                                <span class="group-sync">
+                                    <a class="btn btn-default _display_notice">Đồng bộ <i class="caret"></i> </a><!--<i class="fa fa-retweet"></i>-->
+                                    <div class="items-sync _web_service">
+                                        <button class="btn btn-complete m-t-10 _syc_hrv" data-type="HARAVAN">Haravan</button>
+                                        <button class="btn btn-success _syc_bizweb" data-type="BIZWEB">Bizweb</button>
+                                        <button class="btn btn-primary _sys_items" data-type="ALL" >Tất cả</button>
+                                    </div>
+                                </span>
+
+                                <a class="btn btn-default _lock_active" data-toggle="tooltip" data-code="INACTIVE" data-original-title="Khóa hoạt động"><i class="fa fa-lock"></i></a>
+                                <a class="btn btn-default _lock_active" data-toggle="tooltip" data-code="ACTIVE"  data-original-title="Mở khóa hoạt động"><i class="fa fa-unlock"></i></a>
+                                <a class="btn btn-danger _delete_array_items" data-toggle="tooltip" data-original-title="Xóa sản phẩm"><i class="fa fa-trash"></i></a>
+                            </div>
+                            <div class="col-md-6 ">
+                                <div id="paging" class="style-paging"></div>
+                            </div>
+                        </div>
+                        <!--/bottom actions -->
+                    </div>
+                </div>
+            </div>
+            <!--/product list -->
+        </div>
+
+
+<script id="_render_list_items" type="text/x-handlebars-template">
+     <table class="table dataTable dataTables_wrapper form-inline no-footer" role="grid">
+                                <thead>
+                                <tr>
+                                    <th class="v-align-middle">
+                                        <div class="checkbox ">
+                                            <input type="checkbox" class="_checkAll" value="1" id="checkbox1">
+                                            <label for="checkbox1"></label>
+                                        </div>
+                                    </th>
+                                    <th class="col-md-4">
+                                        Sản phẩm
+                                    </th>
+                                    <th>
+                                        Người bán
+                                    </th>
+                                    <th class="col-md-1">
+                                        T.Thái
+                                    </th>
+                                    <th class="col-md-2">
+                                        Giá vốn
+                                    </th>
+                                    <th class="col-md-1">
+                                        Giá bán
+                                    </th>
+
+                                    <th class="col-md-1">
+                                    </th>
+                                </tr>
+                                </thead>
+
+                                <tbody>
+                                {{#if list_items}}
+                                {{#each list_items}}
+
+                                <!-- BEGIN ITEM ROW -->
+                                <tr class="item-product-td">
+                                    <td class="v-align-middle">
+                                           <!-- <input type="checkbox" class="_checkboxSys" rel="{{id.$id}}" value="{{id.$id}}" name="product_ids[]" >-->
+                                        <div class="checkbox ">
+                                            <input type="checkbox" class="_checkboxSys" rel="{{id.$id}}" value="{{id.$id}}" id="{{id.$id}}">
+                                            <label for="{{id.$id}}"></label>
+                                        </div>
+                                    </td>
+
+                                    <td>
+                                        <div class="row">
+                                            <div class="col-md-2">
+                                                <a href="chi-tiet-san-pham/{{id.$id}}" target="_blank"><img class="product-thumb" src="{{image.src}}" width="100%"></a>
+                                            </div>
+                                            <div class="col-md-10">
+                                                <div>
+                                                    <span>ID: {{id.$id}}</span>
+                                                </div>
+                                                <div>
+                                                    <strong>
+                                                        {{#if has_title}}{{title}}{{else}}{{titleOrigin}}{{/if}}
+                                                    </strong>
+                                                </div>
+                                                <div class="item-link">
+                                                    <a href="javascript:" class="_edit_items" data-item-id="{{id.$id}}">Sửa nhanh</a> &nbsp;&nbsp;&nbsp;
+                                                    <a href="{{originalLink}}" target="_blank">Xem link gốc</a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
+
+                                    <td>
+                                        <img src="{{favicon_service}}">
+                                        {{sellerName}}
+                                    </td>
+
+                                    <td>
+                                        {{#if active}}
+                                        <button class="btn btn-default btn-xs _active_items" data-product-id="{{id.$id}}" data-active="{{status_active}}" data-toggle="tooltip" data-original-title="Click để khóa sản phẩm"><i class="fa fa-unlock"></i></button>
+                                        {{else}}
+                                        <button class="btn btn-default btn-xs _active_items" data-product-id="{{id.$id}}" data-active="{{status_active}}" data-toggle="tooltip" data-original-title="Click để mở sản phẩm"><i class="fa fa-lock"></i></button>
+                                        {{/if}}
+                                    </td>
+
+                                    <td>
+                                        {{#if has_sale_price}}
+                                            {{#if has_sale_price_min}}{{min_origin_sale_price}} ¥{{/if}}
+                                            {{#if has_sale_price_max}}{{max_origin_sale_price}} ¥{{/if}}
+                                        {{#if has_sale_price_min_max}}{{min_origin_sale_price}} - {{max_origin_sale_price}} ¥{{/if}}
+                                         ~
+                                        {{/if}}
+
+                                        {{#if has_price}}
+                                            <span {{#if has_sale_price}} class="sale-price" {{/if}}>{{min_price}} - {{max_price}} ¥</span>
+                                        {{else}}
+                                        <span {{#if has_sale_price}} class="sale-price" {{/if}}>{{price_origin}} ¥</span>
+                                        {{/if}}
+
+                                    </td>
+                                    <td>
+                                        <span class="bold">{{#if minPriceSale}} {{ vnd minPriceSale}} {{/if}}</span><br>
+                                        <small class="text-complete"></small>
+                                    </td>
+                                    <td class="text-center _display_info">
+
+                                            {{#switch integration_service}}
+                                                {{#case "ALL" }}
+                                        <div class="group-action">
+                                                    <div>Đồng bộ <i class="caret"></i> </div>
+                                                    <button class="btn btn-complete _sys_haravan" data-code="{{id.$id}}" id="_sys_haravan_{{id.$id}}" data-type="HARAVAN" >Haravan</button>
+                                                    <button class="btn btn-success _sys_bizWeb" data-code="{{id.$id}}" id="_sys_bizWeb_{{id.$id}}" data-type="BIZWEB" >Bizweb</button>
+                                                    <button class="btn btn-primary _sys_all" data-code="{{id.$id}}" id="_sys_all_{{id.$id}}" data-type="ALL" >Tất cả</button>
+                                                    <button class="btn btn-danger _delete_items" data-id-item="{{id.$id}}">Xóa</button>
+                                            </div>
+                                                {{/case}}
+                                            {{#case "HARAVAN"}}
+                                        <div class="group-action two-services">
+                                                <div>Đồng bộ <i class="caret"></i> </div>
+                                            <button class="btn btn-complete _sys_haravan" data-code="{{id.$id}}" id="_sys_haravan_{{id.$id}}" data-type="HARAVAN"  >Haravan</button>
+                                            <button class="btn btn-danger _delete_items" data-id-item="{{id.$id}}">Xóa</button>
+                                            </div>
+                                            {{/case}}
+                                            {{#case "BIZWEB"}}
+                                        <div class="group-action two-services">
+                                                <div>Đồng bộ <i class="caret"></i> </div>
+                                            <button class="btn btn-success _sys_bizWeb" data-code="{{id.$id}}" id="_sys_bizWeb_{{id.$id}}"  data-type="BIZWEB" >Bizweb</button>
+                                            <button class="btn btn-danger _delete_items" data-id-item="{{id.$id}}">Xóa</button>
+                                            </div>
+                                            {{/case}}
+                                            {{#case "EMPTY"}}
+                                                <div class="group-action empty-service"></div>
+                                            {{/case}}
+                                            {{/switch}}
+
+                                        {{#if had_sys}}
+                                        <br/>
+                                        <br/>
+                                                <a style="padding-left: 27px;" href="javascript:" data-html="true" data-toggle="tooltip"
+
+                                           title="
+                                           {{#each integration_product}}
+                                                <small {{#if approval_status_fail}}class='text-danger'{{/if}}>Đồng bộ {{server_sys}} {{status_sys}} lúc: {{time_sys}}  {{#if approval_status_success}},
+ ID {{server_sys}}: {{service_id}} {{/if}}</small>
+ <br>
+                                        {{/each}}
+                                           " {{#if sys_webservice_false}}
+                                                class="text-danger"
+                                            {{/if}} >
+
+                                            {{#if sys_webservice_false}}
+                                                <i class="fa fa-warning"></i>
+                                            {{else}}
+                                                <i class="fa fa-info"></i>
+                                            {{/if}}
+                                        </a>
+                                        {{/if}}
+                                    </td>
+                                </tr>
+                                {{/each}}
+                                {{else}}
+                                <td colspan="7" class="text-center">Chưa có sản phẩm nào !</td>
+                                {{/if}}
+                                <!--/ item row -->
+                                </tbody>
+                            </table>
+</script>
+
+<!--modal-dialog modal-lg-->
+<div class="modal fade stick-up" id="myModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header clearfix text-left">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"><i class="pg-close fs-14"></i></button>
+                <h4><span class="semi-bold">Sửa nhanh sản phẩm</span></h4>
+                <p></p>
+            </div>
+            <div class="modal-body">
+                <form role="form" id="_edit_product_variant" name="_edit_product_variant" class="form-edit-ide">
+                    <div class="form-group-attached" id="_popup_edit_product">
+
+                        <!--giá trị ở đây-->
+                    </div>
+                </form>
+
+
+            </div>
+        </div>
+    </div>
+</div>
+<!--render dữ liệu cho popup sản phẩm-->
+
+<script id="_render_popup_edit" type="text/x-handlebars-template">
+    <div class="row">
+        <div class="col-md-5">
+            <div class="form-group">
+                <div class="row">
+                    <div class="col-md-3 image-content">
+                        <img src="{{items.image.src}}"  class="style-image-header">
+                    </div>
+                    <div class="col-md-9 md9">
+                        <p>Tên sản phẩm</p>
+                        <input type="text" name="" value="{{#if items.hasTitle}}{{items.title}}{{else}}{{items.titleOrigin}}{{/if}}" class="form-control _product_title input-style">
+                        <p>Tiêu đề gốc sản phẩm</p>
+                        <p class="title-product-ide">{{items.titleOrigin}}</p> <!-- hiển thị tên của title gốc-->
+                        <p>Tags sản phẩm</p>
+                        <p>
+                            <!--<input class="_inputTags input-style" type="text" value="{{items.tags}}" data-role="tagsinput" />-->
+                            <input class="tagsinput custom-tag-input _inputTags" type="text" value="{{items.tags_product}}"/>
+                        </p>
+                        <!-- chưa bổ sung tên sản phẩm gốc -->
+                        {{#if items.isHomeland}}
+                       <a href="{{items.originalLink}}" target="_blank">Link gốc</a>
+                        <span>
+                Sản phẩm này từ <a href="1688.com" target="_blank">1688.com</a>. Do vậy có trường hợp giá thay đổi theo số lượng mua . Vui lòng kiểm tra link gốc !
+                        </span>
+                        {{/if}}
+                        <p class="label-chosen">
+                            <span>
+                                <input type="checkbox" {{#if items.onlyUpdatePriceItems}}checked{{/if}} class="_onlyUpdatePrice">
+                            </span>
+                            <span class="update-price">Chỉ cập nhật giá</span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-7">
+            <div class="form-group _scroll">
+                <div class="row">
+                    <div class="col-md-6">
+                        <p><b>Phiên bản sản phẩm</b></p>
+                    </div>
+                    <div class="col-md-3">
+                        <p><b>Giá gốc</b></p>
+                    </div>
+                    <div class="col-md-3">
+                        <p><b>Giá bán VNĐ</b></p>
+                    </div>
+                </div>
+                <div class="_list_variant">
+                    {{#each list_variants}}
+                    <div class="row row-items-ide">
+                        <div class="col-md-1">
+                            <img src="{{image}}" class="style-image"/>
+                        </div>
+                        <div class="col-md-5">
+                            <p>
+                                ID: {{id.$id}}<!--id của variant-->
+                                {{#each optKeys}}
+                                    {{this.title}}
+                                {{/each}}
+                            </p>
+                        </div>
+                        <div class="col-md-3">
+                            <p>
+                                {{#if has_sale_price}}
+                                    {{originalSalePrice}}¥ ~
+                                {{/if}}
+
+                                {{#if isHomeLand}}
+                                <span  {{#if has_sale_price}} class="sale-price" {{/if}}>{{minPriceOrigin}} - {{maxPriceOrigin}}¥</span>
+                                {{else}}
+                                    <span {{#if has_sale_price}} class="sale-price" {{/if}}> {{price}}¥</span>
+                                {{/if}}
+                            </p>
+                        </div>
+                        <div class="col-md-3 input-price-ide">
+                            <input type="text" data-a-dec="," data-a-sep="." value="{{salePrice}}" class="autonumeric form-control _change_variant_price" value="{{salePrice}}" name="variant[]" data-variant-id="{{id.$id}}"  />
+                        </div>
+                    </div>
+                {{/each}}
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="form-group footer-content">
+        <div class="row">
+            <div class="col-md-2 text-right label-ide">
+                <!--Lựa chọn-->
+            </div>
+            <div class="col-md-2 label-ide">
+
+            </div>
+            <div class="col-md-3 text-right btn-group-ide">
+                <button type="button" class="btn btn-success _variant_save" data-product-id="{{items.id.$id}}">LƯU</button>
+                <button type="button" class="btn btn-danger pull-right" data-dismiss="modal">HỦY</button>
+            </div>
+        </div>
+    </div>
+    </form>
+</script>
+

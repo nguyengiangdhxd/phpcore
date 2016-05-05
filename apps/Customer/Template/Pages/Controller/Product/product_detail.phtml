@@ -1,0 +1,431 @@
+<?php
+use Flywheel\Document\Html;
+
+$document = $this->document();
+/** @var Html $document */
+$document->addCss('pages/css/process/product/product-list.css');
+$document->addCss('pages/css/process/product/product-detail.css');
+$document->addJs('assets/plugins/handlerbars/handlebars-v3.0.0.js');
+$document->addJs('assets/plugins/notify.min.js');
+$document->addJs('assets/plugins/jquery-autonumeric/autoNumeric.js');
+$document->addJs('assets/plugins/bootstrap-tag/bootstrap-tagsinput.min.js');
+$document->addCss('assets/plugins/bootstrap-tag/bootstrap-tagsinput.css');
+$document->addJs('assets/js/jquery.slimscroll.min.js');
+$document->addJs('assets/process/product_detail.js','BOTTOM');
+$document->addJs('assets/process/chatBox.js','BOTTOM');
+$document->addJs('assets/js/libs/jquery.ui/jquery.ui.widget.js', 'TOP');
+$document->addJs('assets/js/libs/fileupload/canvas-to-blob.min.js');
+$document->addJs('assets/js/libs/fileupload/load-image.all.min.js');
+$document->addJs('assets/js/libs/fileupload/jquery.iframe-transport.js');
+$document->addJs('assets/js/libs/fileupload/jquery.fileupload.js');
+$document->addJs('assets/js/libs/fileupload/jquery.fileupload-process.js');
+$document->addJs('assets/js/libs/fileupload/jquery.fileupload-image.js');
+$title = 'Chi tiết sản phẩm';
+/** @var \Mongodb\Items $item_product*/
+/** @var \Mongodb\ItemVariant $item_variant */
+?>
+<?php
+$this->widget('app.Widget.BreadcrumbsPage', array(
+    'links' => array(
+        t('Home') => array(
+            'url' => $this->createUrl('Customer/default')
+        ),
+        $title
+    ),
+)); ?>
+
+<div class="container-fluid container-fixed-lg">
+
+        <div class="row">
+            <div class="col-md-12">
+                                <h4 class="pull-left font-400">Chi tiết sản phẩm</h4>
+                                <span class="pull-right">
+                                    <span>
+                                        <a href="<?php echo $item_product->getOriginalLink() ?>" target="_blank">
+                                            <i class="fa fa-link"></i><span> Link gốc &nbsp;</span>
+                                        </a>
+                                    </span>
+                                        <button class="btn btn-complete m-b-10 _save_product_detail" type="button"><i class="fa fa-save"></i> <span>LƯU</span>
+                                    </button>
+                                </span>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-12 col-xs-12">
+                <div class="form-group">
+                    <label>Tiêu đề</label>
+                    <input id="_product_title" type="text" value="<?php if($item_product->getTitle()){ echo $item_product->getTitle();}else{echo $item_product->getTitleOrigin();} ?>" class="form-control" placeholder="Tiêu đề"/>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-12 col-xs-12">
+                <div class="form-group">
+                    <label>Tiêu đề gốc: </label>
+                    <span><?=$item_product->getTitleOrigin() ?></span>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-8 col-xs-12">
+                <div class="row">
+                    <div class="col-md-4 col-xs-6">
+                        <div class="form-group">
+                            <label>Tag sản phẩm</label>
+                            <input class="tagsinput custom-tag-input _inputTags" type="text" value="<?php if($item_product->getTagsProduct()){echo implode(',',$item_product->getTagsProduct()); }?> "/>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-xs-12">
+                        <label>&nbsp;</label>
+
+                        <div class="checkbox ">
+                            <input type="checkbox" <?php if($item_product->getOnlyUpdatePrice()){echo "checked";} ?> id="_onyUpdatePrice">
+                            <label for="_onyUpdatePrice">Chỉ cập nhật giá sản phẩm</label>
+                        </div>
+                    </div>
+                </div>
+
+                <!--thông số sản phẩm-->
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="col-md-12 col-xs-12">
+                                    <div class="form-group">
+                                        <h5 class="semi-bold m-t-0">Thông số sản phẩm</h5>
+                                    </div>
+                                </div>
+                                <div id="_option_items">
+                                    <!--sửa lại option ở đây-->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <!--phiên bản sản phẩm-->
+                <div class="panel panel-default">
+                    <div id="_variant_product">
+                        <!--phiên bản sản phẩm-->
+                    </div>
+                </div>
+
+                <!--ảnh trong chi tiết sản phẩm-->
+                <div class="panel panel-default">
+                    <div id="__upload_image_from">
+                      <!--upload anhr ở đây-->
+                    </div>
+                </div>
+
+                <!--logs-->
+                <!--Chú ý sắp xếp theo mới trước cũ sau-->
+                <?php
+                $url = 'product_detail/load_and_update_activity';
+                $item_id = $item_product->getId()->{'$id'};
+                $this->widget('app.Widget.ChatBox', array(
+                    'setting' => array(
+                        'list' => array(
+                            'url' => $url,
+                            'params' => array(
+                                'item_id' => $item_id,
+                            )
+                        )
+                    )
+                ));
+                ?>
+
+            </div>
+            <div class="col-md-4 col-xs-12">
+                <div class="form-group">
+                    <div class="lbl-detail-ide">Site</div>
+                    <div><a href="javascript:" target="_blank"><?=$item_product->getHomeLand().'.com'?></a></div>
+                </div>
+                <div class="form-group">
+                    <div class="lbl-detail-ide">Khuyến mại</div>
+                    <div>
+                        <?php
+                        if($item_product->getMinOriginalSalePrice() != $item_product->getMinOriginPrice()){
+                            echo "Có";
+                        }else{
+                            echo "Không";
+                        }
+                        ?>
+
+                    </div><!--nếu sản phẩm có saleprice thì có khuyến mại , trong trường hợp ko có thì ko có khuyến mại-->
+                </div>
+                <div class="form-group">
+                    <div class="lbl-detail-ide">Nơi bán</div>
+                    <div>
+                        <?php if( $item_product->getItemLocation()){echo $item_product->getItemLocation();}else{echo "---";}?>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="lbl-detail-ide">ID người bán</div>
+                    <div><?= $item_product->getSellerId() ?></div>
+                </div>
+                <div class="form-group">
+                    <div class="lbl-detail-ide">Giá gốc thấp nhất</div>
+                    <div><?php if($item_product->getMinOriginPrice()){echo $item_product->getMinOriginPrice().' ¥';}else{echo "---";}?></div>
+                </div>
+                <div class="form-group">
+                    <div class="lbl-detail-ide">Giá gốc cao nhất</div>
+                    <div>
+                        <?php if($item_product->getMaxOriginPrice()){echo $item_product->getMaxOriginPrice().' ¥';}else{echo "---";} ?>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="lbl-detail-ide">Lần cập nhật cuối từ nguồn</div>
+                    <div><?= $item_product->getLastUpdateFromSource()->format('H:i:s d/m/Y'); ?></div>
+                </div>
+                <div class="form-group">
+                    <div class="lbl-detail-ide">Lần sửa cuối</div>
+                    <div>
+                        <?= $item_product->getModifiedTime()->format('H:i:s d/m/Y'); ?>
+                    </div>
+                </div>
+                <hr/>
+                <div id="_display_render_sys">
+                    <!--render hiển thị đồng bộ-->
+                </div>
+            </div>
+        </div>
+
+</div>
+
+
+<!--render ra phần đồng bộ sản phẩm-->
+<script id="_render_sys" type="text/x-handlebars-template">
+    <div class="form-group">
+        <div class="lbl-detail-ide">Đồng bộ web dịch vụ</div>
+        <div>
+            <input type="checkbox" data-init-plugin="switchery" data-size="small" class="_switchy_sys" data-color="primary"
+                {{#if is_active}}checked{{/if}} />
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="lbl-detail-ide" style="margin-top: 6px">Đồng bộ sản phẩm</div>
+        <div class="group-syn">
+<!--            <a class="btn btn-complete btn-cons" id="_btn_sys_product" data-item-id="{{id.$id}}" {{#if is_active}}{{else}}disabled{{/if}}>Đồng bộ</a>-->
+                {{#switch integration_service}}
+                    {{#case "ALL" }}
+                    <div class="group-action">
+                        <div>Đồng bộ <i class="caret"></i> </div>
+                            <button class="btn btn-complete _syc_to_haravan" data-type="HARAVAN" data-id="{{id.$id}}">Haravan</button>
+                            <button class="btn btn-success _syc_to_bizweb" data-type="BIZWEB" data-id="{{id.$id}}">Bizweb</button>
+                            <button class="btn btn-primary _syc_to_all " data-type="ALL" data-id="{{id.$id}}">Tất cả</button>
+                    </div>
+                    {{/case}}
+                    {{#case "HARAVAN"}}
+                    <div class="group-action">
+                        <div>Đồng bộ <i class="caret"></i> </div>
+                        <button class="btn btn-complete _syc_to_haravan"  data-type="HARAVAN" data-id="{{id.$id}}">Haravan</button>
+                    </div>
+                    {{/case}}
+                    {{#case "BIZWEB"}}
+                    <div class="group-action">
+                        <div>Đồng bộ <i class="caret"></i> </div>
+                        <button class="btn btn-success _syc_to_bizweb" data-type="BIZWEB" data-id="{{id.$id}}" >Bizweb</button>
+                    </div>
+                    {{/case}}
+                    {{#case "EMPTY"}}
+
+                    {{/case}}
+                {{/switch}}
+        </div>
+        <div class="clearfix"></div>
+    </div>
+    <div class="form-group">
+        <div class="lbl-detail-ide">ID sản phẩm</div> <!--id sản phẩm trên bizweb-->
+        <div>
+            {{#if integrationItems.BIZWEB.product_id}}
+                {{integrationItems.BIZWEB.product_id}}
+            {{else}}
+                ---
+            {{/if}}
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="lbl-detail-ide">Đồng bộ cuối lúc</div>
+        <div>
+            {{#if time_sys}}
+                {{time_sys}}
+            {{else}}
+                ---
+            {{/if}}
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="lbl-detail-ide">Trạng thái</div>
+        <div>
+            {{#if status_sys}}
+                {{status_sys}}
+            {{else}}
+                Chưa đồng bộ
+            {{/if}}
+        </div>
+    </div>
+   <div class="form-group">
+        <div class="text-center hidden" id="_status_sys">
+            <img src="templates/pages.revox.io/assets/img/loading.gif" height="25px" width="25px">
+            &nbsp;&nbsp;Đang đồng bộ
+        </div>
+    </div>
+    {{#if is_active}}
+    {{else}}
+    <div class="form-group">
+        <div class="alert alert-warning">
+            Sản phẩm đang khóa, không thể đồng bộ
+        </div>
+    </div>
+    {{/if}}
+
+</script>
+
+<!--render ra phần variant của sản phẩm-->
+<script id="_render_variant_product" type="text/x-handlebars-template">
+    <div class="panel-body">
+        <div class="row">
+            <div class="col-md-5 col-xs-5">
+                <div class="form-group">
+                    <label>Phiên bản sản phẩm</label>
+                </div>
+            </div>
+            <div class="col-md-3 col-xs-2">
+                <div class="form-group">
+                    <label>Giá gốc</label>
+                </div>
+            </div>
+            <div class="col-md-4 col-xs-5">
+                <div class="form-group">
+                    <label>Giá bán(VND)</label>
+                </div>
+            </div>
+        </div>
+
+        {{#each list_variant}}
+        <div class="row">
+            <div class="col-md-1 col-xs-1">
+                <div class="form-group">
+                    <img src="{{image}}"
+                         class="style-image">
+                </div>
+            </div>
+            <div class="col-md-4 col-xs-4">
+                <div class="form-group">
+                    <p>
+                        {{#each optKeys}}
+                            {{this.title}}
+                        {{/each}}
+                    </p>
+                </div>
+            </div>
+            <div class="col-md-3 col-xs-2">
+                <div class="form-group">
+                    <p>
+                        <!--<span>1040 ¥</span>
+                        <span class="sale-price-ide m-l-15">1145 ¥</span>-->
+                        {{#if has_sale_price}}
+                        {{originalSalePrice}}¥ ~
+                        {{/if}}
+
+                        {{#if isHomeLand}}
+                        <span  {{#if has_sale_price}} class="sale-price" {{/if}}>{{minPriceOrigin}} - {{maxPriceOrigin}}¥</span>
+                        {{else}}
+                        <span {{#if has_sale_price}} class="sale-price" {{/if}}> {{price}}¥</span>
+                        {{/if}}
+                    </p>
+                </div>
+            </div>
+            <div class="col-md-4 col-xs-5">
+                <div class="form-group">
+                    <div class="input-group">
+                        <input type="text" data-a-dec="," data-a-sep="." value="{{salePrice}}" class="autonumeric form-control _change_variant_price" id="_variant_price_{{id.$id}}" data-variant-id="{{id.$id}}"  />
+                        <span class="input-group-btn">
+                            <button class="btn btn-complete _variant_save" type="button" id="_variant_{{id.$id}}" data-variant-id="{{id.$id}}">
+                                        <i class="fa fa-save"></i>
+                            </button>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {{/each}}
+
+    </div>
+
+</script>
+<!--render option-->
+<script id="_render_option_product" type="text/x-handlebars-template">
+    <div class="row">
+        <div class="col-md-8 col-xs-8">
+            <div class="form-group">
+                <label>Tiêu đề thông số sản phẩm</label>
+            </div>
+        </div>
+        <div class="col-md-4 col-xs-4">
+            <label>Mã</label>
+        </div>
+    </div>
+    {{#each options}}
+    <div class="row">
+        <div class="col-md-8 col-xs-8">
+            <div class="form-group">
+                <div class="input-group">
+                    <input id="_option_{{@key}}" type="text" class="form-control _change_option" value="{{this.name}}" data-key="{{@key}}" data-ordering="{{this.ordering}}" />
+                        <span class="input-group-btn">
+                            <button class="btn btn-complete _save_option" type="button" id="_save_option_{{@key}}" data-key="{{@key}}" data-ordering="{{this.ordering}}" >
+                                <i class="fa fa-save"></i>
+                            </button>
+                        </span>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 col-xs-4">
+            <div> {{@key}}</div>
+        </div>
+    </div>
+    {{/each}}
+</script>
+
+<!--render ra giá của của hình ảnh trên web-->
+<script id="_upload_image_item" type="text/x-handlebars-template">
+    <div class="panel-body">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="form-group">
+                    <label>Ảnh trong chi tiết sản phẩm</label>
+                </div>
+            </div>
+        </div>
+        <div class="rơw">
+            <ul id="upload-preview-img">
+                <li class="_upload_empty">
+                    <div class="fileUpload-ide m-b-15 _image_upload_image">
+                        <span>+</span>
+
+                        <input name="file" class="upload" id="_fileupload" type="file"  data-url="product_detail/upload" multiple capture="camera" >
+                    </div>
+                </li>
+                {{#each images}}
+                <li class="img-detail-ide m-b-15 _warp_image">
+                    <img
+                        src="{{this.src}}"/>
+                    <ul class="icon-hover-ide">
+                        <li data-toggle="tooltip" class="_delete_image" data-src="{{this.src}}" data-original-title="Xóa ảnh"><i class="pg-trash"></i>
+                        </li>
+                        <li data-toggle="tooltip" data-original-title="Mở link ảnh"><a href="{{this.src}}" target="_blank"><i
+                                    class="fa fa-link"></i></a></li>
+                    </ul>
+                </li>
+                {{/each}}
+            </ul>
+        </div>
+    </div>
+</script>
+
+
+

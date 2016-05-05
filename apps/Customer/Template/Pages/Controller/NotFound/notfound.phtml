@@ -1,0 +1,23 @@
+<?php
+use Flywheel\Document\Html;
+
+$document = $this->document();
+/** @var Html $document */
+$title = 'Không tìm thấy trang';
+?>
+
+<?php
+$this->widget('app.Widget.BreadcrumbsPage', array(
+    'links' => array(
+        t('Home') => array(
+            'url' => $this->createUrl('Customer/default')
+        ),
+        $title
+    ),
+)); ?>
+<div class="container-fluid container-fixed-lg bg-white">
+
+    <img src="templates/pages.revox.io/assets/img/404.png">
+</div>
+
+

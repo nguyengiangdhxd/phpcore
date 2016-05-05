@@ -1,0 +1,66 @@
+<?php
+$redis_host = '192.168.0.250';
+$redis_port = 6379;
+
+return [
+    //integration synchronized
+    'integration_synchronized' => [
+        'adapter' => 'redis',
+        'name' => 'integration_synchronized',
+        'config' => [
+            'dsn' => "$redis_host:$redis_port/15",
+
+        ],
+    ],
+    'translate_title' => [
+        'adapter' => 'redis',
+        'name' => 'translate_title',
+        'config' => [
+            'dsn' => "$redis_host:$redis_port/15",
+
+        ],
+    ],
+    'translate_specifications' => [
+        'adapter' => 'redis',
+        'name' => 'translate_specifications',
+        'config' => [
+            'dsn' => "$redis_host:$redis_port/15",
+
+        ],
+    ],
+    'translate_variants' => [
+        'adapter' => 'redis',
+        'name' => 'translate_variants',
+        'config' => [
+            'dsn' => "$redis_host:$redis_port/15",
+
+        ],
+    ],
+
+    'email_error' => [
+        'adapter' => 'redis',
+        'name' => 'email_error',
+        'config' => [
+            'dsn' => "$redis_host:$redis_port/15",
+
+        ],
+    ],
+
+    'bulk_item_update' => [
+        'adapter' => 'redis',
+        'name' => 'bulk_item_update',
+        'config' => [
+            'dsn' => "$redis_host:$redis_port/15",
+
+        ],
+    ],
+
+    'item_price_policy' => [
+        'adapter' => 'redis',
+        'name' => 'item_price_policy',
+        'config' => [
+            'dsn' => "$redis_host:$redis_port/15",
+
+        ],
+    ]
+];

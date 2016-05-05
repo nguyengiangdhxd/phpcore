@@ -1,0 +1,38 @@
+<?php
+$title = 'công cụ';
+$this->widget('app.Widget.BreadcrumbsPage', array(
+    'links' => array(
+        t('Home') => array(
+            'url' => $this->createUrl('Customer/default')
+        ),
+        $title
+    ),
+)); ?>
+<div class="container-fluid">
+    <div class="col-sm-6 col-sm-offset-3">
+        <h3>Công cụ lấy thông tin sản phẩm trên trang</h3>
+
+        <p>
+            Công cụ lấy thông tin sản phẩm trên website Trung Quốc (Taobao, Tmall, 1688). Vui lòng click vào nút bên dưới để thực hiện cài đặt công cụ.
+            <br />
+
+            <strong>Lưu ý: Chỉ sử dụng trên trình duyệt Chrome & Cốc Cốc</strong>
+
+            <br />
+
+            Phiên bản <strong>1.0</strong>
+
+            <br />
+
+            <br />
+        </p>
+
+        <p>
+
+            <a target="_blank" href="https://chrome.google.com/webstore/detail/c%C3%B4ng-c%E1%BB%A5-l%E1%BA%A5y-th%C3%B4ng-tin-s%E1%BA%A3n/hllmkhfofnnameldcknjbckdnkfnnfmc" class="btn btn-complete">Chrome</a>
+            <a target="_blank" href="https://chrome.google.com/webstore/detail/c%C3%B4ng-c%E1%BB%A5-l%E1%BA%A5y-th%C3%B4ng-tin-s%E1%BA%A3n/hllmkhfofnnameldcknjbckdnkfnnfmc" class="btn btn-primary btn-cons">Cốc cốc</a>
+
+        </p>
+    </div>
+
+</div>

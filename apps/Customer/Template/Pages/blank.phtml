@@ -1,0 +1,20 @@
+<?php
+use Flywheel\Document\Html;
+/** @var Html $document */
+$document = $this->document();
+?>
+<head>
+    <meta charset="utf-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta names="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <title><?php echo $document->title; ?></title>
+    <base href="<?php echo $document->getBaseUrl() ?>">
+    <?php echo $document->css(); ?>
+    <?php echo $document->js('TOP'); ?>
+</head>
+<body>
+    <?php echo $buffer;?>
+    <?php echo $document->js('BOTTOM'); ?>
+</body>
